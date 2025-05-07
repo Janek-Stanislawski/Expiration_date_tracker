@@ -36,6 +36,8 @@ class Window:
         self.date_entry_label_sep_dot1 = tk.Label(self.window, text=".", bg=background, font=("Helvetica", 15))
         self.date_entry_label_sep_dot2 = tk.Label(self.window, text=".", bg=background, font=("Helvetica", 15))
 
+        self.validation()
+
     def window1(self):
 
         self.button.place(x=270, y=80)
@@ -57,6 +59,26 @@ class Window:
 
         self.date_entry_label_sep_dot2.place(x=190, y=35)
         self.date_entry_label_sep_dot2.lower()
+
+
+
+    def validate_numeric_input(self, new_value, max_len):
+        return len(new_value) <= int(max_len) and (new_value.isnumeric() or new_value == "")
+
+    def validate_length(self, new_value, max_len):
+        return len(new_value) <= int(max_len)
+
+    def validation(self):
+        validate_name = (self.window.register(self.validate_length), '%P', '30')
+        validate_day = (self.window.register(self.validate_numeric_input), '%P', '2')
+        validate_month = (self.window.register(self.validate_numeric_input), '%P', '2')
+        validate_year = (self.window.register(self.validate_numeric_input), '%P', '4')
+
+        self.day_entry.config(validate='key', validatecommand=validate_day)
+        self.month_entry.config(validate='key', validatecommand=validate_month)
+        self.year_entry.config(validate='key', validatecommand=validate_year)
+        self.name_entry.config(validate='key', validatecommand=validate_name)
+
 
     def handle_button_press(self, event):
         return
