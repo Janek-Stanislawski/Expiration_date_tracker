@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import Entry
 from tkinter import ttk
+from main import *
 
 background = "#1f9aa1"
 
@@ -36,6 +37,12 @@ class Window:
         self.date_entry_label_sep_dot1 = tk.Label(self.window, text=".", bg=background, font=("Helvetica", 15))
         self.date_entry_label_sep_dot2 = tk.Label(self.window, text=".", bg=background, font=("Helvetica", 15))
 
+        # creates table in database
+        create_table()
+
+        self.table = ttk.Treeview(self.window)
+        self.table['columns'] = ()
+
         self.validation()
 
     def window1(self):
@@ -61,7 +68,6 @@ class Window:
         self.date_entry_label_sep_dot2.lower()
 
 
-
     def validate_numeric_input(self, new_value, max_len):
         return len(new_value) <= int(max_len) and (new_value.isnumeric() or new_value == "")
 
@@ -79,9 +85,27 @@ class Window:
         self.year_entry.config(validate='key', validatecommand=validate_year)
         self.name_entry.config(validate='key', validatecommand=validate_name)
 
+    def check_if_entry_has_data(self):
+        return (
+                len(self.name_entry.get()) >= 4 and
+                len(self.day_entry.get()) == 2 and
+                len(self.month_entry.get()) == 2 and
+                len(self.year_entry.get()) == 4
+        )
 
     def handle_button_press(self, event):
-        return
+        if self.check_if_entry_has_data():
+            name = self.name_entry.get()
+            date = f"{self.year_entry.get()}-{self.month_entry.get()}-{self.day_entry.get()}"
+            insert_medicine(name, date)
+            show_table()
+            delete_medicine(name)
+            print("\nThere is the end\n")
+            show_table()
+            connection.close()
+        else:
+            # will return error message about too short medicine name or absence of date
+            return
 
 
 if __name__ == "__main__":
